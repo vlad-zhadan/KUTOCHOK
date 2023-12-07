@@ -1,3 +1,7 @@
+
+
+
+
 const mapTilerKey = 'Wllbp5hPJZa4ZoFvKPiW';
 const mapTilerUrl = `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${mapTilerKey}&scaleFactor=@2x`;
 
@@ -29,3 +33,27 @@ const map = new ol.Map({
     })
 });
 
+const vectorSource = new ol.source.Vector({wrapX: false});
+
+// Create a vector layer using the vector source
+const vectorLayer = new ol.layer.Vector({
+    source: vectorSource
+});
+
+// Add the vector layer to the map
+map.addLayer(vectorLayer);
+
+// Create a draw interaction for drawing polygon features
+const draw = new ol.interaction.Draw({
+    source: vectorSource, // Use the vector source for drawing
+    type: 'Polygon' // Specify the type of feature to draw
+});
+
+// Add the draw interaction to the map
+map.addInteraction(draw);
+
+// Optional: Add an event listener if you want to do something when a polygon is drawn
+draw.on('drawend', function(event) {
+    // Do something with the drawn polygon if needed
+    // event.feature is the drawn polygon
+});
