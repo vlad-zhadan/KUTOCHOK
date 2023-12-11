@@ -28,22 +28,23 @@ const map = new ol.Map({
 
 })
 
-olms.apply(map, styleJson);
+//olms.apply(map, styleJson);
 
 const vectorSource = new ol.source.Vector({wrapX: false});
 
 // Create a vector layer using the vector source
 const vectorLayer = new ol.layer.Vector({
-    source: vectorSource,
-    style: new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(255, 255, 255, 0.6)', // Change color and opacity as needed
-        }),
-        stroke: new ol.style.Stroke({
-            color: '#ffcc33',
-            width: 2
-        })
-    })
+    source: vectorSource
+    // ,
+    // style: new ol.style.Style({
+    //     fill: new ol.style.Fill({
+    //         color: 'rgba(255, 255, 255, 0.6)', // Change color and opacity as needed
+    //     }),
+    //     stroke: new ol.style.Stroke({
+    //         color: '#ffcc33',
+    //         width: 2
+    //     })
+    // })
 
 });
 
@@ -51,7 +52,7 @@ console.log(map); // Check if the map is initialized
 console.log(vectorLayer); 
 
 // Add the vector layer to the map
-map.addLayer(vectorLayer);
+//map.addLayer(vectorLayer);
 
 // Create a draw interaction for drawing polygon features
 const draw = new ol.interaction.Draw({
@@ -60,7 +61,12 @@ const draw = new ol.interaction.Draw({
 });
 
 // Add the draw interaction to the map
-map.addInteraction(draw);
+//map.addInteraction(draw);
+
+olms.apply(map, styleJson).then(function() {
+    map.addLayer(vectorLayer);
+    map.addInteraction(draw);
+});
 
 // Optional: Add an event listener if you want to do something when a polygon is drawn
 draw.on('drawend', function(event) {
