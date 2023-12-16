@@ -15,11 +15,35 @@
 <body>
     <div id="map" >
         <div class="draw-button">
-                    <i class="fa-solid fa-pen"></i>
-                </div>
-                <div id="popup" class="ol-popup">
-                    <div id="popup-content"></div>
-                </div>
+        <i class="fa-solid fa-pen"></i>
+        </div>
+
+        <div id="popup" class="ol-popup">
+            <div id="popup-content"></div>
+        </div>
+
+        <div id="draw-popup" class="ol-popup" >
+            <form id="feature-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"><br>
+        
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes"></textarea><br>
+        
+                <label for="accessory">Accessory:</label>
+                <input type="text" id="accessory" name="accessory"><br>
+        
+                <label for="soil-type">Soil Type:</label>
+                <input type="text" id="soil-type" name="soil-type"><br>
+        
+                <label for="trash-type">Type of Trash:</label>
+                <input type="text" id="trash-type" name="trash-type"><br>
+        
+                <button type="button" id="save-feature">Save</button>
+                <button type="button" id="discard-feature">Discard</button>
+            </form>
+        </div>
+
     </div>
     <script src="../js/main2.js"></script>
 </body>

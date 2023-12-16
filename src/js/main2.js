@@ -64,13 +64,14 @@ map.addLayer(outlineLayer);
 });
 
 
-map.on('singleclick', function(event) {
-    map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
-        // Implement a popup or other feature interaction
-        console.log('Clicked feature', feature);
-    });
-});
-
+// map.on('singleclick', function(event) {
+//     map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
+//         // Implement a popup or other feature interaction
+//         console.log('Clicked feature', feature);
+//     });
+// });
+// Toggle draw interaction
+let isDrawing = false; // Flag to track the drawing state
 const container = document.getElementById('popup');
 const content = document.getElementById('popup-content');
 const overlay = new ol.Overlay({
@@ -83,6 +84,11 @@ const overlay = new ol.Overlay({
 map.addOverlay(overlay);
 
 map.on('singleclick', function(event) {
+    if(isDrawing){
+        return
+    }
+
+    console.log(5)
     const feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
         return feature;
     });
@@ -154,8 +160,7 @@ olms.apply(map, styleJson).then(function() {
     // Don't add the draw interaction here
 });
 
-// Toggle draw interaction
-let isDrawing = false; // Flag to track the drawing state
+
 
 document.querySelector('.draw-button').addEventListener('click', function() {
     if (isDrawing) {
@@ -168,9 +173,82 @@ document.querySelector('.draw-button').addEventListener('click', function() {
     isDrawing = !isDrawing; // Toggle the state
 });
 
+// draw.on('drawend', function(event) {
+//     console.log(event.feature);
+//     // Optional: Automatically disable drawing after a feature is drawn
+//     map.removeInteraction(draw);
+//     isDrawing = false;
+// });
+
+const drawPopUpHtml = `<form id="feature-form">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name"><br>
+                
+                        <label for="notes">Notes:</label>
+                        <textarea id="notes" name="notes"></textarea><br>
+                
+                        <label for="accessory">Accessory:</label>
+                        <input type="text" id="accessory" name="accessory"><br>
+                
+                        <label for="soil-type">Soil Type:</label>
+                        <input type="text" id="soil-type" name="soil-type"><br>
+                
+                        <label for="trash-type">Type of Trash:</label>
+                        <input type="text" id="trash-type" name="trash-type"><br>
+                
+                        <button type="button" id="save-feature">Save</button>
+                        <button type="button" id="discard-feature">Discard</button>
+                    </form>`
+
+const drawPopup = document.getElementById('draw-popup');
+const drawOverlay = new ol.Overlay({
+    element: drawPopup,
+    autoPan: true,
+    autoPanAnimation: {
+        duration: 250
+    }
+});
+map.addOverlay(drawOverlay);
+
+
 draw.on('drawend', function(event) {
-    console.log(event.feature);
-    // Optional: Automatically disable drawing after a feature is drawn
+    // Get the feature that was drawn
+    const newFeature = event.feature;
+
+    // Display the popup
+    
+    //drawPopup.style.display = 'block';
+    
+    //content.innerHTML = drawPopUpHtml;
+    // Position the popup (e.g., at the first coordinate of the polygon)
+    const coords = newFeature.getGeometry().getCoordinates();
+    drawOverlay.setPosition(coords[0][0]); // Modify as needed for polygon geometry
+    console.log(coords[0][0])
+
+    // Attach event listeners to buttons
+    document.getElementById('save-feature').onclick = function() {
+        // Collect form data and save it to the feature
+         
+        const formData = new FormData(document.getElementById('feature-form'));
+        for (const [key, value] of formData.entries()) {
+            newFeature.set(key, value);
+        }
+        
+        // Code to save information to Maptiler Cloud
+        console.log('Saving feature:', newFeature);
+
+        // Hide the popup
+        drawPopup.style.display = 'none';
+        isDrawing = false;
+    };
+
+    document.getElementById('discard-feature').onclick = function() {
+        // Remove the feature and hide the popup
+        vectorNewPolygonSource.removeFeature(newFeature);
+        drawOverlay.setPosition(undefined);
+        isDrawing = false;
+    };
+
+    // // Optional: Automatically disable drawing after a feature is drawn
     map.removeInteraction(draw);
-    isDrawing = false;
 });
