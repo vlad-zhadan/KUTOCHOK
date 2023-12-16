@@ -90,31 +90,39 @@ loadGeoJson(geoJsonUrl).then(geojson => {
     );
 });
 
+const vectorNewPolygonSource = new ol.source.Vector({wrapX: false});
+const vectorLayer = new ol.layer.Vector({
+    source: vectorNewPolygonSource
+});
 
-// const vectorNewPolygonSource = new ol.source.Vector({wrapX: false});
+// Initialize draw interaction but don't add it to the map yet
+const draw = new ol.interaction.Draw({
+    source: vectorNewPolygonSource,
+    type: 'Polygon'
+});
 
-// // Create a vector layer using the vector source
-// const vectorLayer = new ol.layer.Vector({
-//     source: vectorNewPolygonSource
-// });
+olms.apply(map, styleJson).then(function() {
+    map.addLayer(vectorLayer);
+    // Don't add the draw interaction here
+});
 
-// // Create a draw interaction for drawing polygon features
-// const draw = new ol.interaction.Draw({
-//     source: vectorNewPolygonSource, // Use the vector source for drawing
-//     type: 'Polygon' // Specify the type of feature to draw
-// });
+// Toggle draw interaction
+let isDrawing = false; // Flag to track the drawing state
 
-// olms.apply(map, styleJson).then(function() {
-//     // Add the vector layer to the map
-//     map.addLayer(vectorLayer);
-//     // Add the draw interaction to the map
-//     map.addInteraction(draw);
-// });
+document.querySelector('.draw-button').addEventListener('click', function() {
+    if (isDrawing) {
+        // If currently drawing, remove the interaction
+        map.removeInteraction(draw);
+    } else {
+        // If not drawing, add the interaction
+        map.addInteraction(draw);
+    }
+    isDrawing = !isDrawing; // Toggle the state
+});
 
-// // Optional: Add an event listener if you want to do something when a polygon is drawn
-// draw.on('drawend', function(event) {
-//     // Do something with the drawn polygon if needed
-//     // event.feature is the drawn polygon
-//     console.log(event.feature); 
-// });
-
+draw.on('drawend', function(event) {
+    console.log(event.feature);
+    // Optional: Automatically disable drawing after a feature is drawn
+    map.removeInteraction(draw);
+    isDrawing = false;
+});
