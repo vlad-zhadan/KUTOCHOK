@@ -14,9 +14,9 @@ body {
 
 .draw-button {
 position: absolute;
-    bottom: 10px;
+    bottom: 15px;
     /* Adjust as needed */
-    left: 10px;
+    left: 15px;
     /* Adjust as needed */
     z-index: 50;
 

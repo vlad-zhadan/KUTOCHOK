@@ -90,10 +90,22 @@ map.on('singleclick', function(event) {
     if (feature && feature.get('name')) {
         // Here you can retrieve and show any information you need from the feature
         // For example, if your feature has a property 'name':
-        const featureInfo = feature.get('name') || 'No information available';
+        const featureName = feature.get('name') || 'No information available';
+        let infoHtml = '<p>Polygon Information:</p>';
+
+        const featureInfo = feature.getProperties();
+        console.log(featureInfo)
+         for (const key in featureInfo) {
+            if (featureInfo.hasOwnProperty(key) && key !== 'geometry') {
+                infoHtml += '<div><strong>' + key + ':</strong> ' + featureInfo[key] + '</div>';
+            }
+        }
 
         // Set the content of the popup
-        content.innerHTML = '<p>Polygon Information:</p><div>' + featureInfo + '</div>';
+        content.innerHTML = infoHtml;
+
+        // Set the content of the popup
+        //content.innerHTML = '<p>Polygon Information:</p><div>' + featureInfo + '</div>';
 
         // Set the position of the popup
         overlay.setPosition(event.coordinate);
