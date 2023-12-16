@@ -71,6 +71,41 @@ map.on('singleclick', function(event) {
     });
 });
 
+const container = document.getElementById('popup');
+const content = document.getElementById('popup-content');
+const overlay = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+        duration: 250
+    }
+});
+map.addOverlay(overlay);
+
+map.on('singleclick', function(event) {
+    const feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
+        return feature;
+    });
+
+    if (feature && feature.get('name')) {
+        // Here you can retrieve and show any information you need from the feature
+        // For example, if your feature has a property 'name':
+        const featureInfo = feature.get('name') || 'No information available';
+
+        // Set the content of the popup
+        content.innerHTML = '<p>Polygon Information:</p><div>' + featureInfo + '</div>';
+
+        // Set the position of the popup
+        overlay.setPosition(event.coordinate);
+    }
+    if(!feature.get('name')){
+        overlay.setPosition(undefined);
+    }
+});
+
+
+
+
 map.on('pointermove', function(event) {
     if (map.hasFeatureAtPixel(event.pixel)) {
         map.getTargetElement().style.cursor = 'pointer';
@@ -89,6 +124,7 @@ loadGeoJson(geoJsonUrl).then(geojson => {
         })
     );
 });
+
 
 const vectorNewPolygonSource = new ol.source.Vector({wrapX: false});
 const vectorLayer = new ol.layer.Vector({
