@@ -173,34 +173,9 @@ document.querySelector('.draw-button').addEventListener('click', function() {
     isDrawing = !isDrawing; // Toggle the state
 });
 
-// draw.on('drawend', function(event) {
-//     console.log(event.feature);
-//     // Optional: Automatically disable drawing after a feature is drawn
-//     map.removeInteraction(draw);
-//     isDrawing = false;
-// });
-
-const drawPopUpHtml = `<form id="feature-form">
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" name="name"><br>
-                
-                        <label for="notes">Notes:</label>
-                        <textarea id="notes" name="notes"></textarea><br>
-                
-                        <label for="accessory">Accessory:</label>
-                        <input type="text" id="accessory" name="accessory"><br>
-                
-                        <label for="soil-type">Soil Type:</label>
-                        <input type="text" id="soil-type" name="soil-type"><br>
-                
-                        <label for="trash-type">Type of Trash:</label>
-                        <input type="text" id="trash-type" name="trash-type"><br>
-                
-                        <button type="button" id="save-feature">Save</button>
-                        <button type="button" id="discard-feature">Discard</button>
-                    </form>`
 
 const drawPopup = document.getElementById('draw-popup');
+const formsDraw = document.getElementById('feature-form');
 const drawOverlay = new ol.Overlay({
     element: drawPopup,
     autoPan: true,
@@ -215,11 +190,6 @@ draw.on('drawend', function(event) {
     // Get the feature that was drawn
     const newFeature = event.feature;
 
-    // Display the popup
-    
-    //drawPopup.style.display = 'block';
-    
-    //content.innerHTML = drawPopUpHtml;
     // Position the popup (e.g., at the first coordinate of the polygon)
     const coords = newFeature.getGeometry().getCoordinates();
     drawOverlay.setPosition(coords[0][0]); // Modify as needed for polygon geometry
@@ -238,7 +208,9 @@ draw.on('drawend', function(event) {
         console.log('Saving feature:', newFeature);
 
         // Hide the popup
-        drawPopup.style.display = 'none';
+        //drawPopup.style.display = 'none';
+        drawOverlay.setPosition(undefined);
+        formsDraw.reset()
         isDrawing = false;
     };
 
